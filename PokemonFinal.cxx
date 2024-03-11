@@ -4,6 +4,10 @@
 #include <sstream>
 #include <ctime>
 
+#include <algorithm>
+#include <string>
+#include <cctype>
+
 using std::cin;
 using std::cout;
 
@@ -42,6 +46,7 @@ void combate(Pokemon poke1, Pokemon poke2, tpCombates &datos_combate);
 Pokemon seleccionaPokemon(pokemonTable &A);
 std::string calcularVencedor(Pokemon poke1, Pokemon poke2);
 void realizarCombate(Pokemon poke1, Pokemon poke2, tpCombates &showDown);
+bool compare_strings_ignore_case(std::string str1, std::string str2);
 
 int main(void)
 {
@@ -333,14 +338,14 @@ Pokemon seleccionaPokemon(pokemonTable &A)
     srand(time(NULL));
     int index;
     bool a = 1;
-    std::string uwu;
+    std::string name;
     getchar();
     do
     {
-        cout << "\nNombre del pokemon: "; std::getline(cin, uwu); 
+        cout << "\nNombre del pokemon: "; std::getline(cin, name); 
         for (int i = 0; i < A.pokemonData.size(); i++)
         {
-            if (uwu == A.pokemonData.at(i).Name)
+            if ( compare_strings_ignore_case(name, A.pokemonData.at(i).Name) )
             {
                 index = i;
                 a = 0;
@@ -348,7 +353,7 @@ Pokemon seleccionaPokemon(pokemonTable &A)
         }
         if (a)
         {
-            cout << "El nombre escogido es una mierda, "
+            cout << "El nombre escogido no corresponde, "
                  << "Porfavor escoge un pokemon que exista\n";
             cout << "E.g:\n";
             printPokemonData(A.pokemonData, (rand()%A.pokemonData.size()));
@@ -408,4 +413,16 @@ std::string calcularVencedor(Pokemon poke1, Pokemon poke2)
     } else {
         return "EMPATE";
     }
+}
+
+bool compare_strings_ignore_case(std::string str1, std::string str2) 
+{
+    std::string str1_lower(str1);
+    std::transform(str1_lower.begin(), str1_lower.end(), str1_lower.begin(), ::tolower);
+
+    std::string str2_lower(str2);
+    std::transform(str2_lower.begin(), str2_lower.end(), str2_lower.begin(), ::tolower);
+
+    return std::equal(str1_lower.begin(), str1_lower.end(), str2_lower.begin(), str2_lower.end());
+
 }
